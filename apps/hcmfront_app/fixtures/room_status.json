@@ -1,0 +1,34 @@
+[
+    {
+        "pk": 1,
+        "model": "hcmfront_app.Room_Status",
+        "fields": {
+            "name": "No Disponible",
+            "allow_request" : false
+        }
+    },
+    {
+        "pk": 2,
+        "model": "hcmfront_app.Room_Status",
+        "fields": {
+            "name": "Disponible",
+            "allow_request" : true
+        }
+    },
+    {
+        "pk": 3,
+        "model": "hcmfront_app.Room_Status",
+        "fields": {
+            "name": "Reservada",
+            "allow_request" : true
+        }
+    },
+    {
+        "pk": 4,
+        "model": "hcmfront_app.Room_Status",
+        "fields": {
+            "name": "Confirmada",
+            "allow_request" : false
+        }
+    }
+]
