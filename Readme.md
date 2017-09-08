@@ -19,6 +19,7 @@
  	manage.py loaddata supply
 
 **Iniciar Servidor**
+
  	manage.py runserver
 
 **Ingresar con el las credenciales de usuario administrador**
