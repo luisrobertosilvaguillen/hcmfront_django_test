@@ -1,22 +1,22 @@
 **Configurar Credenciales PostgreSql (BDNAME, USERNAME, PASSWORD)**
- Archivo Settings.py, Lineas 82,83,84
+ 	Archivo Settings.py, Lineas 82,83,84
 
 **Migrar Base de Datos**
- manage.py migrate
+ 	manage.py migrate
 
 **Cargar Data Inicial**
- manage.py loaddata group
- manage.py loaddata user
- manage.py loaddata reservation_priority
- manage.py loaddata reservation_status
- manage.py loaddata supply
+ 	manage.py loaddata group
+	 manage.py loaddata user
+ 	manage.py loaddata reservation_priority
+ 	manage.py loaddata reservation_status
+ 	manage.py loaddata supply
 
 **Iniciar Servidor**
- manage.py runserver
+ 	manage.py runserver
 
 **Ingresar con el las credenciales de usuario administrador**
- usuario:admin
- password:admin
+ 	usuario:admin
+ 	password:admin
 
 **Uso de la aplicación** 
  
