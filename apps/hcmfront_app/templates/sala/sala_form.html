@@ -1,0 +1,141 @@
+{% extends 'base/base.html'%}
+{% load staticfiles %}
+{% block extracss %} 
+	<link rel="stylesheet" href="{% static 'css/bootstrap-timepicker.css' %}" />
+{% endblock %}
+{% block title  %} Administrar Salas de Reuniones {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:salas' %}">Salas de Reuniones</a>	
+</li>
+<li class="active">
+	Administrar
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" class="form-horizontal" role="form">
+	{%csrf_token%}
+	{% if  showerr%}
+		<div class="alert alert-danger">
+			<button class="close" data-dismiss="alert">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			Error de Validación!
+			<ul>
+				{% for field, errors in form.errors.items %}
+    				{% for error in errors %}
+    					<li>{{error}}</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+	<div class="form-group">
+		<label class="col-sm-1 control-label no-padding-right" for="txtname"> {{form.name.label}} </label>
+		<div class="col-sm-11">
+			{{form.name}}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label no-padding-right" for="txtlocation"> {{form.location.label}} </label>
+		<div class="col-sm-11">
+			{{form.location}}
+		</div>
+	</div>	
+	<div class="form-group">
+		<label class="col-sm-1 control-label no-padding-right" for="txtcapacity"> {{form.capacity.label}} </label>
+		<div class="col-sm-3">
+			{{form.capacity}}
+		</div>
+		<label class="col-sm-1 control-label no-padding-right" for="txthour_from"> {{form.hour_from.label}} </label>
+		<div class="col-sm-3">
+			{{form.hour_from}}
+		</div>		
+		<label class="col-sm-1 control-label no-padding-right" for="txthour_to"> {{form.hour_to.label}} </label>
+		<div class="col-sm-3">
+			{{form.hour_to}}
+		</div>		
+	</div>	
+	<div class="form-group">
+		<div class="row">
+			<div class="col-xs-12"> 
+				<div class="page-header">
+
+					<h1>
+						Insumos
+					</h1>
+				</div>	
+
+				<div class="row">
+					<div class="col-xs-12 id_supply" >
+						{% for chk in form.supply %}
+							<label for="{{ chk.id_for_label }}">
+								{{chk.tag}}
+								<span class="lbl">{{ chk.choice_label  }} {{chk.tag.id}} </span>
+							</label>
+						{% endfor %}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>				
+		
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="submit">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Guardar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<a href="{% url 'hcmfront_app:salas' %}" class="btn" >
+				<i class="ace-icon fa fa-undo bigger-110"></i>
+				Cancelar
+			</a>
+		</div>
+	</div>	
+</form>
+{% endblock %}
+
+{% block extrajs %} 
+	<script src="{% static 'js/date-time/bootstrap-timepicker.js' %}"></script>
+	<script src="{% static 'js/date-time/moment.js' %}"></script>
+	<script src="{% static 'js/fuelux/fuelux.spinner.js' %}"></script>
+	<script type="text/javascript">
+	jQuery(function($) {
+		$('#txthour_from').timepicker({
+			minuteStep: 1,
+			showSeconds: false,
+			showMeridian: false,
+			defaultTime: '8:00'
+		}).next().on(ace.click_event, function(){
+			$(this).prev().focus();
+		});
+		$('#txthour_to').timepicker({
+			minuteStep: 1,
+			showSeconds: false,
+			showMeridian: false,
+			defaultTime: '17:00'
+		}).next().on(ace.click_event, function(){
+			$(this).prev().focus();
+		});	
+		jQuery.each(jQuery(".chk"), function(i, v) { 
+			if(v.value == 1 || v.value == 2)
+			{
+				jQuery(this).attr("checked", "checked");;
+			}
+		})
+		$('#txtcapacity').ace_spinner({min:1,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'})
+		.closest('.ace-spinner'); 
+
+	});
+	jQuery(".chk").on("change", function() {
+		if(jQuery(this).val() == "1" || jQuery(this).val() == "2")
+		{
+			jQuery(this).prop("checked", true);
+		}
+	})
+	</script>
+{% endblock %}

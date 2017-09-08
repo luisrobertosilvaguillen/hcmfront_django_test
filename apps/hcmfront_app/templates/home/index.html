@@ -1,0 +1,83 @@
+{% extends 'base/base.html'%}
+{% load staticfiles %}
+{% load filters %}
+{% block navegacion  %} 
+<li class="active">
+	Mis Reservaciones
+</li>
+{% endblock %}
+{% block title %} Mis Reservaciones {% endblock %}
+{% block nuevo %} 
+	<a href="{% url 'hcmfront_app:reservas' %}" class="btn_topbar btn btn-info">Nueva</a>
+{% endblock %}
+{% block contenido %} 
+<div class="page-header">
+	<h1>
+		Mis Reservaciones
+		<small>
+			<i class="ace-icon fa fa-angle-double-right"></i>
+			Se confirman las reservaciones con prioridad 'Importante' ó las que esten planificadas en las proximas 8 horas
+		</small>		
+	</h1>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<table id="reservation_table" class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th style="width:30%">Sala</th>
+					<th style="width:9%">Fecha</th>
+					<th style="width:8%">Desde</th>
+					<th style="width:8%">Hasta</th>
+					<th style="width:15%">Cantidad Personas</th>
+					<th style="width:10%">Prioridad</th>
+					<th style="width:10%">Estatus</th>
+					<th style="width:10%"></th>
+				</tr>
+			</thead>
+			<tbody>	
+				{% if reservations %}
+					{% for reservation in reservations %}
+						<tr>
+							<td>{{reservation.room}}</td>
+							<td>{{reservation.date}}</td>
+							<td>{{reservation.hour_from}}</td>
+							<td>{{reservation.hour_to}}</td>
+							<td>{{reservation.quantity}}</td>
+							<td>{{reservation.priority}}</td>
+							<td>{{reservation.status}}</td>
+							<td>
+								{% if reservation.id|can_confirm %}	
+									<a href="/reserva/confirm/{{reservation.id}}"> Confirmar </a>
+								{%endif%}
+							</td>
+						</tr>					
+					{% endfor %}
+				{% endif %}
+
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}
+
+{% block extrajs %} 
+	<script src="{% static 'js/dataTables/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'js/dataTables/jquery.dataTables.bootstrap.js' %}"></script>
+	<script src="{% static 'js/dataTables/extensions/TableTools/js/dataTables.tableTools.js' %}"></script>
+	<script src="{% static 'js/dataTables/extensions/ColVis/js/dataTables.colVis.js' %}"></script>
+	<script type="text/javascript">
+		jQuery(function($) {
+			//initiate dataTables plugin
+			var oTable1 = 
+			$('#reservation_table')
+			.dataTable( {
+				bAutoWidth: false,
+				"aaSorting": [],
+				"language": {
+            		"url": "{% static 'js/dataTables/es.json' %}"
+        		}
+		    } );
+		});
+	</script>	
+{% endblock %}

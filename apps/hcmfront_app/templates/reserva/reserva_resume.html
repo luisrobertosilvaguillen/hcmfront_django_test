@@ -1,0 +1,44 @@
+<form action="{% url 'hcmfront_app:reservasave' %}" method="POST" id="frmsave">
+{%csrf_token%}
+	<input type="hidden" value="{{from}}" name="hour_from" id="thour_from" />
+	<input type="hidden" value="{{to}}" name="hour_to" id="thour_to" />
+	<input type="hidden" value="{{date}}" name="date" id="tdate" />
+	<input type="hidden" value="{{room.id}}" name="room" id="troom" />
+	<input type="hidden" value="{{quantity}}" name="quantity" id="tquantity" />
+	<input type="hidden" value="{{rsv}}" name="rsv" id="rsv" />
+	<div class="well well-lg">
+		<h4 class="blue">Sala</h4>
+		<p id="resume_sala">{{room.name}}</p>
+		<h4 class="blue">Desde - Hasta</h4>
+		<p id="resume_desde">{{from}} - {{to}}</p>
+		<h4 class="blue">Personas</h4>
+		<p id="resume_personas">{{quantity}}</p>
+		<h4 class="blue">Prioridad de Reservación</h4>
+		<div class="form-group">
+			<div class="col-sm-4">
+				<select class="form-control col-xs-10 col-sm-8" name="priority" id="tpriority">		
+					{% if priorities %}
+						{%for priority in priorities %}
+								<option value="{{priority.id}}">{{priority.name}}</option>
+						{%endfor%}
+					{%endif%} 
+				</select>
+			</div>	
+		</div>		
+		<h4 class="blue">Insumos de la Reservación</h4>	
+		<div class="form-group id_supply">
+			<div class="row" style="margin-left: 0;">
+				<div class="col-xs-12">
+					{% if supplies %}
+						{%for supply in supplies %}
+							<label for="id_supply_{{supply.id}}">		
+								<input class="ace chk" id="id_supply_{{supply.id}}" name="supply" type="checkbox" value="{{supply.id}}">
+								<span class="lbl">{{supply.name}}  </span>
+							</label>
+						{%endfor%}
+					{%endif%} 
+				</div>
+			</div>
+		</div>	
+	</div>
+</form>

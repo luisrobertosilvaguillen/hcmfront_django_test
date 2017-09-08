@@ -1,0 +1,72 @@
+{% load filters %}
+<div class="modal fade">
+	<div class="modal-dialog" style="width:900px">
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" style="margin-top:-15px;">&times;</button>
+				<form class="form-horizontal" action="/reserva/reservaformedit/{{reservation.id}}" id="reserva_frm" method="post" novalidate="novalidate">
+					{%csrf_token%}
+					<h3 class="lighter block green">Datos de Reserva: {{reservation.room}}</h3>
+						<div class="form-group">
+							<label class="col-sm-1 control-label no-padding-right" for="date"> Fecha </label>
+							<div class="col-sm-3">
+								<input id="date" disabled name="date" type="text" class="form-control" value="{{reservation.date}}"/>
+								<input type="hidden" value="{{reservation.room.id}}" name="room" id="troom" />
+							</div>						
+							<label class="col-sm-1 control-label no-padding-right" for="hour_from"> Inicio </label>
+							<div class="col-sm-3">
+								<input id="hour_from" disabled name="hour_from" type="text" class="form-control" value="{{reservation.hour_from}}"/>
+							</div>
+							<label class="col-sm-1 control-label no-padding-right" for="hour_to"> Fin </label>
+							<div class="col-sm-3">
+								<input id="hour_to" disabled name="hour_to" type="text" class="form-control" value="{{reservation.hour_to}}" />
+							</div>		
+						</div>
+						<div class="form-group">
+							<label class="col-sm-1 control-label no-padding-right" for="quantity"> Personas </label>
+							<div class="col-sm-3">
+								<input id="quantity" name="quantity" type="number" class="form-control"  value="{{reservation.quantity}}"/>
+							</div>	
+							<label class="col-sm-1 control-label no-padding-right" for="priority"> Prioridad </label>
+							<div class="col-sm-3">
+								<select class="form-control col-xs-10 col-sm-8" name="priority" id="tpriority">		
+									{% if priorities %}
+										{%for priority in priorities %}
+												{% if priority.id == reservation.priority.id %}
+													<option selected value="{{priority.id}}">{{priority.name}}</option>
+												{% else %}
+													<option value="{{priority.id}}">{{priority.name}}</option>										
+												{% endif %}
+										{%endfor%}
+									{%endif%} 
+								</select>
+							</div>														
+						</div>
+						<div style="padding-left: 12px;" class="form-group id_supply">
+						<h4 class="blue">Insumos</h4>
+							<div class="col-sm-12">
+								{% if supplies %}
+									{%for supply in supplies %}
+										<label for="id_supply_{{supply.id}}">	
+												{% if reservation|has_supply:supply.id %}	
+													<input checked class="ace chk" id="id_supply_{{supply.id}}" name="supply" type="checkbox" value="{{supply.id}}">
+													<span class="lbl">{{supply.name}}  </span>
+												{% else %}
+													<input class="ace chk" id="id_supply_{{supply.id}}" name="supply" type="checkbox" value="{{supply.id}}">
+													<span class="lbl">{{supply.name}}  </span>									
+												{% endif %}											
+
+										</label>
+									{%endfor%}
+								{%endif%} 
+							</div>							
+						</div>
+				</form>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="/reserva/delete/{{reservation.id}}" class="btn btn-sm btn-danger" ><i class="ace-icon fa fa-trash-o"></i> Eliminar Reservación</a>
+			<button type="button" class="btn btn-sm btn-success" data-action="save"><i class="ace-icon fa fa-save"></i> Guardar</button>
+		</div>		
+	</div>
+</div>

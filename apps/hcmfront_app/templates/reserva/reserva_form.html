@@ -1,0 +1,83 @@
+<div class="modal fade">
+	<div class="modal-dialog" style="width:900px">
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" style="margin-top:-15px;">&times;</button>
+				<div class="widget-box">
+					<div class="widget-header widget-header-blue widget-header-flat">
+						<h4 class="widget-title lighter">Reservar Sala de Reuniones</h4>
+					</div>
+					<div class="widget-body">
+						<div class="widget-main">
+							<div id="fuelux-wizard-container">
+								<div>
+									<ul class="steps">
+										<li data-step="1" class="active">
+											<span class="step">1</span>
+											<span class="title">Requerimiento</span>
+										</li>
+										<li data-step="2" class="">
+											<span class="step">2</span>
+											<span class="title">Selecciona Sala</span>
+										</li>
+										<li data-step="3" class="">
+											<span class="step">3</span>
+											<span class="title">Detalle Reserva</span>
+										</li>
+									</ul>
+								</div>
+								<hr>
+								<div class="step-content pos-rel">
+									<div class="step-pane active" data-step="1">
+										<form class="form-horizontal" id="reserva_frm" method="get" novalidate="novalidate">
+											<h3 class="lighter block green">Datos de Reserva</h3>
+												<div class="form-group">
+													<label class="col-sm-1 control-label no-padding-right" for="txtdesde"> Inicio </label>
+													<div class="col-sm-3">
+														<input id="txtdesde" name="txtdesde" type="text" class="form-control" />
+														<div id="txtdesde-error" class="help-block"></div>
+													</div>
+													<label class="col-sm-1 control-label no-padding-right" for="txthasta"> Fin </label>
+													<div class="col-sm-3">
+														<input id="txthasta" name="txthasta" type="text" class="form-control" />
+														<div id="txthasta-error" class="help-block"></div>
+													</div>		
+													<label class="col-sm-1 control-label no-padding-right" for="txtcantidad"> Personas </label>
+													<div class="col-sm-3">
+														<input id="txtcantidad" name="txtcantidad" type="number" class="form-control" />
+														<div id="txtcantidad-error" class="help-block"></div>
+													</div>														
+												</div>
+										</form>
+									</div>
+									<div class="step-pane" data-step="2">
+										<div id="table_romms">
+										</div>
+									</div>
+									<div class="step-pane form-horizontal" data-step="3">
+										<div id="reservation_resume">
+										</div>					
+									</div>									
+								</div>
+							</div>
+							<hr>
+							<div class="wizard-actions">
+								<button class="btn btn-prev" disabled="disabled">
+									<i class="ace-icon fa fa-arrow-left"></i>
+									Anterior
+								</button>
+								<button class="btn btn-success btn-next" data-last="Aceptar">
+									Siguiente
+									<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancelar</button>
+		</div>		
+	</div>
+</div>

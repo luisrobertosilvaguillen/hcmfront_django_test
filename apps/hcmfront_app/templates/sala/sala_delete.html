@@ -1,0 +1,32 @@
+{% extends 'base/base.html'%}
+{% block title  %} Eliminar Sala de Reuniones {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:salas' %}">Salas de Reuniones</a>	
+</li>
+<li class="active">
+	Eliminar Sala de Reuniones
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" class="form-horizontal" role="form">
+	{%csrf_token%}
+	<h3>¿Desea eliminar la Sala de Reuniones: {{object.name}}?</h3>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="submit">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Si, eliminar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<a href="{% url 'hcmfront_app:insumos' %}" class="btn" >
+				<i class="ace-icon fa fa-undo bigger-110"></i>
+				Cancelar
+			</a>
+
+		</div>
+	</div>	
+</form>
+{% endblock %}

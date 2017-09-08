@@ -1,0 +1,23 @@
+{% for noti in notis %}
+	{% if noti.type_noti == 1 %}
+		<li >
+			<a href="{% url 'hcmfront_app:reservation_notification' noti.id %}">
+				<div class="clearfix">
+					<span class="pull-left">
+						<i class="btn btn-xs no-hover btn-pink fa fa-comment"></i>
+						{{noti.message}}
+					</span>
+					
+				</div>
+			</a>
+		</li>											
+	{% endif %}	
+	{% if noti.type_noti == 2 %}
+		<li>
+			<a href="{% url 'hcmfront_app:confirm_reservation_request' noti.id %}">
+				<i class="btn btn-xs btn-primary fa fa-user"></i>
+				{{noti.message}}
+			</a>
+		</li>											
+	{% endif %}																				
+{% endfor %}

@@ -1,0 +1,32 @@
+{% extends 'base/base.html'%}
+{% block title  %} Eliminar Reservacion {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:home' %}">Reservaciones</a>	
+</li>
+<li class="active">
+	Eliminar Reservación
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" class="form-horizontal" role="form">
+	{%csrf_token%}
+	<h3>¿Desea Eliminar la Reservacion de la Sala: {{reservation.room}}, Fecha:  {{reservation.date}}, desde  {{reservation.hour_from}} hasta  {{reservation.hour_to}} ?</h3>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="submit">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Si, confirmar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<a href="{% url 'hcmfront_app:home' %}" class="btn" >
+				<i class="ace-icon fa fa-undo bigger-110"></i>
+				Cancelar
+			</a>
+
+		</div>
+	</div>	
+</form>
+{% endblock %}

@@ -1,0 +1,49 @@
+<div id="select_room-error" class="help-block"></div>
+<form class="form-horizontal" id="select_frm" method="get" novalidate="novalidate">
+	<table id="select_table" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Sala</th>
+				<th>Capacidad</th>
+				<th>Horario</th>
+				<th>Estatus</th>
+				<th style="width:18%"></th>
+			</tr>
+		</thead>
+		<tbody>	
+			{% if rooms %}
+				{% for room in rooms %}
+					<tr>
+						<td>{{room.room.name}}</td>
+						<td>{{room.room.capacity}}</td>
+						<td>{{room.room.hour_from}} a {{room.room.hour_to}}</td>
+						<td>
+							{{room.status.name}}
+							{% if room.status.id == 3 or room.status.id == 4 %}
+								de {{room.reservation.hour_from}} -  {{room.reservation.hour_to}}
+							{% endif %}		
+						</td>
+						<td style="width:10%">
+							{% if room.status.id = 2 %}
+								<label>
+									<input room="{{room.room}}" rsv="0" name="select_room" value="{{room.room.id}}" type="radio" class="ace">
+									<span class="lbl"> Reservar</span>
+								</label>							
+							{% endif %}
+							{% if room.status.id == 3 %}
+								{% if request.user.id == room.reservation.user.id %}
+									<span class="lbl"> Reservación Propia</span>
+								{% else %}		
+									<label>
+										<input room="{{room.room}}" rsv="{{room.reservation.id}}" name="select_room" value="{{room.room.id}}" type="radio" class="ace">
+										<span class="lbl"> Pedir Reservación</span>
+									</label>															
+								{% endif %}								
+							{% endif %}		
+						</td>
+					</tr>					
+				{% endfor %}
+			{% endif %}
+		</tbody>
+	</table>
+</form>

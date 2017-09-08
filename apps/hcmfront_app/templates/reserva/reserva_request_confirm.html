@@ -1,0 +1,43 @@
+{% extends 'base/base.html'%}
+{% block title  %} Confirmar Cambio de Reservacion {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:reservas' %}">Reservaciones</a>	
+</li>
+<li class="active">
+	Confirmar Cambio de Reservacion
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" id="frmreq" class="form-horizontal" role="form">
+	{%csrf_token%}
+	<h3>{{notification.message}}</h3>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" data-action="confirm" th="1" type="button">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Si, confirmar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<button class="btn btn-danger" data-action="confirm" th="0" type="button">
+				<i class="ace-icon fa fa-times bigger-110"></i>
+				No, denegar
+			</button>			
+		</div>
+		<input type="hidden" name="th" id="th" />
+	</div>	
+</form>
+{% endblock %}
+{% block extrajs %} 
+	<script type="text/javascript">
+		jQuery(function($) 
+		{
+			$("#frmreq").find('button[data-action=confirm]').on('click', function() {
+				$("#th" ).val($(this).attr("th")); 
+				$("#frmreq" ).submit(); 
+			});
+		});
+	</script>
+{% endblock %}

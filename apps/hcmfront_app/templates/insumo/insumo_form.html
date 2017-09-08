@@ -1,0 +1,51 @@
+{% extends 'base/base.html'%}
+{% block title  %} Administrar Insumo {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:insumos' %}">Insumos</a>	
+</li>
+<li class="active">
+	Administrar
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" class="form-horizontal" role="form">
+	{%csrf_token%}
+	{% if showerr%}
+		<div class="alert alert-danger">
+			<button class="close" data-dismiss="alert">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			Error de Validación!
+			<ul>
+				{% for field, errors in form.errors.items %}
+    				{% for error in errors %}
+    					<li>{{error}}</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}	
+	<div class="form-group">
+		<label class="col-sm-1 control-label no-padding-right" for="txtname"> {{form.name.label}} </label>
+		<div class="col-sm-7">
+			{{form.name}}
+		</div>
+	</div>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="submit">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Guardar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<a href="{% url 'hcmfront_app:insumos' %}" class="btn" >
+				<i class="ace-icon fa fa-undo bigger-110"></i>
+				Cancelar
+			</a>
+		</div>
+	</div>	
+</form>
+{% endblock %}

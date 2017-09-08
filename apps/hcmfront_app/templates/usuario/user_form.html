@@ -1,0 +1,89 @@
+{% extends 'base/base.html'%}
+{% block title  %} Administrar Usuarios {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:salas' %}">Usuarios</a>	
+</li>
+<li class="active">
+	Administrar
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" class="form-horizontal" role="form">
+	{%csrf_token%}
+	{% if showerr%}
+		<div class="alert alert-danger">
+			<button class="close" data-dismiss="alert">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			Error de Validación!
+			<ul>
+				{% for field, errors in form.errors.items %}
+    				{% for error in errors %}
+    					<li>{{error}}</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtname"> {{form.first_name.label}} </label>
+		<div class="col-sm-5">
+			{{form.first_name}}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.last_name.label}} </label>
+		<div class="col-sm-5">
+			{{form.last_name}}
+		</div>
+	</div>	
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.username.label}} </label>
+		<div class="col-sm-5">
+			{{form.username}}
+		</div>
+	</div>		
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.email.label}} </label>
+		<div class="col-sm-5">
+			{{form.email}}
+		</div>
+	</div>	
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.group.label}} </label>
+		<div class="col-sm-5">
+			{{form.group}}
+		</div>
+	</div>		
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.password1.label}} </label>
+		<div class="col-sm-5">
+			{{form.password1}}
+		</div>	
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label no-padding-right" for="txtlocation"> {{form.password2.label}} </label>
+		<div class="col-sm-5">
+			{{form.password2}}
+		</div>	
+	</div>			
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="submit">
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Guardar
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<a href="{% url 'hcmfront_app:usuarios' %}" class="btn" >
+				<i class="ace-icon fa fa-undo bigger-110"></i>
+				Cancelar
+			</a>
+		</div>
+	</div>	
+</form>
+{% endblock %}
+
+

@@ -1,0 +1,28 @@
+{% extends 'base/base.html'%}
+{% block title  %} Notificación de Reservacion {% endblock %}
+{% block navegacion %} 
+<li>
+	<a href="{% url 'hcmfront_app:reservas' %}">Reservaciones</a>	
+</li>
+<li class="active">
+	Notificación de Reservacion
+</li>
+{% endblock %}
+
+{% block contenido %} 
+<form method="POST" id="frmreq" class="form-horizontal" role="form">
+	{%csrf_token%}
+	<h3>{{notification.message}}</h3>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+
+			<a href="{% url 'hcmfront_app:home' %}" class="btn btn-success" >
+				<i class="ace-icon fa fa-check bigger-110"></i>
+				Ok
+			</a>			
+		</div>
+		<input type="hidden" name="th" id="th" />
+	</div>	
+</form>
+{% endblock %}
+

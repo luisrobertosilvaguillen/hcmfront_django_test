@@ -1,0 +1,352 @@
+{% extends 'base/base.html'%}
+{% block title  %} Reservación de Sala {% endblock %}
+{% load staticfiles %}
+{% load filters %}
+{% block extracss %} 
+	<link rel="stylesheet" href="{% static 'css/fullcalendar.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/datepicker.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/bootstrap-timepicker.css' %}" />
+
+{% endblock %}
+{% block navegacion %} 
+<li class="active">
+	Reservación de Sala
+</li>
+{% endblock %}
+{% block nuevo %} 
+<div class="row" style="max-width: 20%; float: right;">
+	<div class="col-xs-8 col-sm-12">
+		<div class="input-group">
+			<input class="form-control date-picker" id="buscarfecha" type="text" data-date-format="dd-mm-yyyy" placeholder="Buscar Fecha"/>
+			<span class="input-group-addon">
+				<i class="fa fa-calendar bigger-110"></i>
+			</span>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block contenido %} 
+	<div class="row">
+		<div class="col-xs-12">
+			<div id="calendar"></div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block extrajs %} 
+	<script src="{% static 'js/jquery-ui.custom.js' %}"></script>
+	<script src="{% static 'js/jquery.ui.touch-punch.js' %}"></script>
+	<script src="{% static 'js/date-time/moment.js' %}"></script>
+	<script src="{% static 'js/date-time/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'js/date-time/datepicker_es.js' %}"></script>	
+	<script src="{% static 'js/fullcalendar.js' %}"></script>
+	<script src="{% static 'js/bootbox.js' %}"></script>
+	<script src="{% static 'js/fuelux/fuelux.spinner.js' %}"></script>
+
+	<script src="{% static 'js/fuelux/fuelux.wizard.js' %}"></script>
+	<script src="{% static 'js/jquery.validate.js' %}"></script>
+	<script src="{% static 'js/additional-methods.js' %}"></script>
+	<script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+	<script src="{% static 'js/select2.js' %}"></script>
+	<script src="{% static 'js/date-time/bootstrap-timepicker.js' %}"></script>
+
+	<script src="{% static 'js/dataTables/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'js/dataTables/jquery.dataTables.bootstrap.js' %}"></script>
+	<script src="{% static 'js/dataTables/extensions/TableTools/js/dataTables.tableTools.js' %}"></script>
+	<script src="{% static 'js/dataTables/extensions/ColVis/js/dataTables.colVis.js' %}"></script>	
+
+	<script type="text/javascript">
+		jQuery(function($) 
+		{
+			$('.date-picker').datepicker({
+				autoclose: true,
+				todayHighlight: true,
+				language: "es"
+			})
+			.on('changeDate', function (ev) {
+				calendar.fullCalendar( 'gotoDate', ev.date )
+			})
+			//show datepicker when clicking on the icon
+			.next().on(ace.click_event, function(){
+				$(this).prev().focus();
+			});
+			var evnt = []
+			{% for ev in eventos %}
+				evnt.push({
+					title: '{{ev.room.name}}',
+					start: new Date({{ev.date.year}},({{ev.date.month}} - 1),{{ev.date.day}},{{ev.hour_from.hour}},{{ev.hour_from.minute}}) ,
+					end: new Date({{ev.date.year}},({{ev.date.month}} - 1),{{ev.date.day}},{{ev.hour_to.hour}},{{ev.hour_to.minute}}),
+					className: 'label-success',
+					idr:{{ev.id}}
+				});
+			{% endfor %}
+
+			var date = new Date();
+			var d = date.getDate();
+			var m = date.getMonth();
+			var y = date.getFullYear();
+			var configs = {
+				//isRTL: true,
+				 buttonHtml: {
+					prev: '<i class="ace-icon fa fa-chevron-left"></i>',
+					next: '<i class="ace-icon fa fa-chevron-right"></i>'
+				},
+				locale: 'es',
+				defaultView: 'agendaDay',
+				allDaySlot: false,			
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: ''
+				},
+				events: evnt
+				,
+				editable: true,
+				selectable: true,
+				selectHelper: true,
+				select: function(start, end, allDay) {
+					jQuery.ajax({
+						type: "GET",
+						url: "./reservaform",
+						dataType: "html",
+						success: function (data) {
+							modal = $(data).appendTo('body');
+							modal.modal('show').on('hidden', function(){
+								modal.remove();
+							}).on('hide.bs.modal', function(){
+								modal.remove();
+							});		
+
+							$('#fuelux-wizard-container')
+							.ace_wizard({
+							})
+							.on('actionclicked.fu.wizard' , function(e, info){
+								var fecha = start._d.getUTCFullYear() + "-" + (start._d.getUTCMonth() + 1) + "-" + start._d.getUTCDate();
+								var desde = $("#txtdesde").val();
+								var hasta = $("#txthasta").val();
+								var cantidad = $("#txtcantidad").val();								
+								switch(info.step)
+								{
+									case 1:
+										if(!$('#reserva_frm').valid()) 
+										{
+											e.preventDefault();
+										}	
+										else
+										{
+											jQuery.ajax({
+												type: "GET",
+												url: "./get_salas_reserva?date="+fecha+"&from="+desde+"&to="+hasta+"&quantity="+cantidad,
+												dataType: "html",
+												success: function (data) {	
+													$("#table_romms").html(data);
+													$('#select_table').dataTable( {
+														bAutoWidth: false,
+														"aaSorting": [],
+														"language": {
+										            		"url": "{% static 'js/dataTables/es.json' %}"
+										        		}
+												    } );													
+												},
+												error: function (jqXHR, textStatus, errorThrown) {
+													console.log(errorThrown);
+												}
+											})												
+										}								
+									break
+									case 2:
+										var rsel = $("input[name='select_room']:checked");
+										if(rsel.val() == undefined) 
+										{
+											if(info.direction != "previous")
+											{
+												e.preventDefault();
+											}
+										}	
+										else
+										{	
+											if(info.direction != "previous")
+											{
+												jQuery.ajax({
+													type: "GET",
+													url: "./reserva_resume?date="+fecha+"&from="+desde+"&to="+hasta+"&quantity="+cantidad+"&room_id="+rsel.val()+"&rsv="+rsel.attr("rsv"),
+													dataType: "html",
+													success: function (data) {	
+														$("#reservation_resume").html(data);
+
+														jQuery.each(jQuery(".chk"), function(i, v) { 
+															if(v.value == 1 || v.value == 2)
+															{
+																jQuery(this).attr("checked", "checked");;
+															}
+														})
+														jQuery(".chk").on("change", function() {
+															if(jQuery(this).val() == "1" || jQuery(this).val() == "2")
+															{
+																jQuery(this).prop("checked", true);
+															}
+														})															
+													},
+													error: function (jqXHR, textStatus, errorThrown) {
+														console.log(errorThrown);
+													}
+												})		
+											}							
+										}
+									break
+								}
+								
+							})
+							.on('finished.fu.wizard', function(e) {
+								var msj = "";
+								if($("#rsv").val()=="0")
+								{
+									msj = "Desea Guardar la reservación?";
+								}
+								else
+								{
+									msj = "Desea Pedir Reasignación de la Reservación? (La solicitud debe ser aprobada por un usuario admistrador)";
+								}
+								bootbox.confirm(msj, function(result)
+								{ 
+									if(result)
+									{
+										$("#frmsave" ).submit(); 
+									}
+								})
+							}).on('stepclick.fu.wizard', function(e){
+							});
+							$('#txtdesde').timepicker({
+								minuteStep: 1,
+								showSeconds: false,
+								showMeridian: false,
+								defaultTime: get_time_formated(start)
+							}).next().on(ace.click_event, function(){
+								$(this).prev().focus();
+							});
+							$('#txthasta').timepicker({
+								minuteStep: 1,
+								showSeconds: false,
+								showMeridian: false,
+								defaultTime: get_time_formated(end)
+							}).next().on(ace.click_event, function(){
+								$(this).prev().focus();
+							});	
+							$('#txtcantidad').ace_spinner({value:2,min:2,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'}).closest('.ace-spinner'); 
+							$(".widget-title").append(" el " + start._d.getUTCDate() + "/" + (start._d.getUTCMonth()+1) + "/" + start._d.getUTCFullYear())
+
+							$.validator.addMethod("time24", function(value, element) {
+							    if (!/^\d{1,2}:\d{2}$/.test(value)) return false;
+							    var parts = value.split(':');
+							    if (parts[0] > 23 || parts[1] > 59) return false;
+							    return true;
+							}, "Formato de Hora Invalido");		
+							
+							$('#reserva_frm').validate({
+								errorElement: 'div',
+								errorClass: 'help-block',
+								focusInvalid: false,
+								ignore: "",
+								rules:{
+									txtdesde: {
+										required: true,
+										time24: true
+									},
+									txthasta: {
+										required: true,
+										time24: true
+									},
+									txtcantidad: {
+										required: true,
+										min: 2
+									}
+								},
+								messages: {
+									txtdesde: {
+										required: "Ingrese la hora de inicio"
+									},
+									txthasta: {
+										required: "Ingrese la hora final"
+									},
+									txtcantidad: {
+										required: "Ingrese la cantidad de personas",
+										min: "Minimo dos personas"
+									}						
+								},
+								highlight: function (e) {
+									$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+								},
+								success: function (e) {
+									$(e).remove();
+								},			
+								errorPlacement: function (error, element) {
+									$("#"+element.attr("id")+"-error").html(error);
+								}													
+							})
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(errorThrown);
+						}
+					});
+					calendar.fullCalendar('unselect');
+				}
+				,
+				eventClick: function(calEvent, jsEvent, view) {
+					jQuery.ajax({
+						type: "GET",
+						url: "./reserva/reservaformedit/"+calEvent.idr,
+						dataType: "html",
+						success: function (data) {
+							modal = $(data).appendTo('body');
+
+							modal.find('button[data-action=save]').on('click', function() {
+								$("#reserva_frm" ).submit(); 
+							});
+							
+							modal.modal('show').on('hidden', function(){
+								modal.remove();
+							}).on('hide.bs.modal', function(){
+								modal.remove();
+							});		
+							$('#quantity').ace_spinner({min:2,max:200,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'}).closest('.ace-spinner'); 
+
+							jQuery.each(jQuery(".chk"), function(i, v) { 
+								if(v.value == 1 || v.value == 2)
+								{
+									jQuery(this).attr("checked", "checked");;
+								}
+							})
+							jQuery(".chk").on("change", function() {
+								if(jQuery(this).val() == "1" || jQuery(this).val() == "2")
+								{
+									jQuery(this).prop("checked", true);
+								}
+							})
+
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(errorThrown);
+						}
+					});
+				}
+				
+			}
+			{% if request.user|has_group:"admin" %}	
+				configs.selectable =  false;
+				configs.eventDurationEditable = false;
+				configs.eventStartEditable = false;
+			{% endif %}
+
+			var calendar = $('#calendar').fullCalendar(configs);
+		});
+		function get_time_formated (date) {
+			var hour = date._d.getUTCHours();
+			var min = date._d.getUTCMinutes();
+			var ret = hour.toString() + ":" +  min.toString()
+			return ret;
+		}
+	</script>
+{% endblock %}
+
+
+
