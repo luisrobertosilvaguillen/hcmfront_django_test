@@ -1,24 +1,24 @@
-###Configurar Credenciales PostgreSql (BDNAME, USERNAME, PASSWORD)
+**Configurar Credenciales PostgreSql (BDNAME, USERNAME, PASSWORD)**
  Archivo Settings.py, Lineas 82,83,84
 
-###Migrar Base de Datos
+**Migrar Base de Datos**
  manage.py migrate
 
-###Cargar Data Inicial
+**Cargar Data Inicial**
  manage.py loaddata group
  manage.py loaddata user
  manage.py loaddata reservation_priority
  manage.py loaddata reservation_status
  manage.py loaddata supply
 
-###Iniciar Servidor:
+**Iniciar Servidor**
  manage.py runserver
 
-###Ingresar con el las credenciales de usuario administrador:
+**Ingresar con el las credenciales de usuario administrador**
  usuario:admin
  password:admin
 
-###Uso de la aplicación: 
+**Uso de la aplicación** 
  
  1. Modulo Usuario: Cargar usuarios (roles = admin y general) para las pruebas funcionales
  
@@ -42,7 +42,7 @@
  5. Ingresar con Usuario Admin (EDITAR RESERVACIONES, ELIMINAR RESERVACIONES, DECIDIR SI CEDE UNA RESERVACION A OTRO USUARIO O NO EN CASO DE QUE HAYAN PETICIONES PENDIENTES)
 
  
-###Feedback:
+**Feedback**
 
  Para la resolucion del problema use algunas cosas que no estaban en el enunciado tales como:
  
