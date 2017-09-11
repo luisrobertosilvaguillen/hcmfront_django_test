@@ -30,24 +30,25 @@ class ReservaCreate(LoginRequiredMixin, CreateView):
 	def post(self, request, *args, **kwargs):
 		self.object = self.get_object
 		form = self.form_class(request.POST)
-		if form.is_valid():
-			obj = form.save(commit=False)
-			if not request.POST["rsv"] == "0":
-			 	reservation = Reservation.objects.get(pk=request.POST["rsv"])
-				dat = reservation.date.strftime('%d/%m/%Y')
-				t1 = reservation.hour_from.strftime('%H:%M')
-				t2 = reservation.hour_to.strftime('%H:%M')
-				priority = Reservation_Priority.objects.get(id = obj.priority.id)
-				msj = ("El usuario "+ request.user.username +" ha solicitado la asignacion de la Reservacion: Sala " + reservation.room.name + ", con fecha " + dat +" de " + t1 + " a " + t2 +". Prioridad: " + priority.name + ".")
-				noti = Notification(message=msj, type_noti=2 )
-				noti.save()	
-			 	rr = Reservation_Request(reservation = reservation, user = request.user, notification=noti)
-			 	rr.save()						 	
-			else:
+		if not request.POST["rsv"] == "0":
+		 	reservation = Reservation.objects.get(pk=request.POST["rsv"])
+			dat = reservation.date.strftime('%d/%m/%Y')
+			t1 = reservation.hour_from.strftime('%H:%M')
+			t2 = reservation.hour_to.strftime('%H:%M')
+			priority = Reservation_Priority.objects.get(id = request.POST["priority"])
+			msj = ("El usuario "+ request.user.username +" ha solicitado la asignacion de la Reservacion: Sala " + reservation.room.name + ", con fecha " + dat +" de " + t1 + " a " + t2 +". Prioridad: " + priority.name + ".")
+			noti = Notification(message=msj, type_noti=2 )
+			noti.save()	
+		 	rr = Reservation_Request(reservation = reservation, user = request.user, notification=noti)
+		 	rr.save()
+		else:
+			if form.is_valid():
+				obj = form.save(commit=False)
 				obj.user = request.user
 				obj.status = Reservation_Status(id=3)
 				obj.save()
-				form.save_m2m()
+				form.save_m2m()						
+				
 		return HttpResponseRedirect(self.get_success_url())		
 
 @login_required
@@ -148,6 +149,7 @@ def confirm_reservation_request(request, pk):
 		noti.checked = True
 		noti.user_check = request.user
 		noti.save()
+
 		if request.POST["th"] == "1":
 			reservation = Reservation.objects.get(id=reservation_req.reservation.id)
 			dat = reservation.date.strftime('%d/%m/%Y')

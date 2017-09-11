@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from datetime import  date
+import datetime
+
+from django.db.models import Lookup
+
+
 
 class Supply(models.Model):
 	name =  models.CharField(max_length=80, default='', blank=False)
@@ -53,14 +58,33 @@ class Reservation(models.Model):
 		if self.quantity <= 1:
 			raise ValidationError('La capacidad debe ser mayor a 1')
 
-		rh = Reservation.objects.filter(date = self.date, room__id=self.room.id).filter(Q(hour_from__range=(self.hour_from, self.hour_to)) | Q(hour_to__range=(self.hour_from, self.hour_to))).first()
-		
-		if rh:
-			if not rh.id == self.id:
-				raise ValidationError('Hay una reservacion para la sala '+ rh.room.name+' de '+rh.hour_from.strftime('%H:%M')+' a '+ rh.hour_to.strftime('%H:%M'))
+		rh = Reservation.objects.filter(date = self.date, room__id=self.room.id)#.filter(Q(hour_from__range=(self.hour_from, self.hour_to)) | Q(hour_to__range=(self.hour_from, self.hour_to))).first()
+		isValid = True 
+		for rs in rh:
+			if self.time_in_range(rs.hour_from, rs.hour_to, self.hour_from) or self.time_in_range(rs.hour_from, rs.hour_to, self.hour_to) :
+				isValid = False
+				res = rs
+
+		if not isValid:		
+			raise ValidationError({'room': ['Hay una reservacion para la sala '+ res.room.name+' de '+res.hour_from.strftime('%H:%M')+' a '+ res.hour_to.strftime('%H:%M'),]})
 		
 		if not ((self.hour_from > self.room.hour_from and self.hour_from < self.room.hour_to) and (self.hour_to > self.room.hour_from and self.hour_to < self.room.hour_to)):
-			raise ValidationError('Sala no disponible.')
+			raise ValidationError({'room': ['Sala no disponible.',]})
+
+	def time_in_range(self, start, end, x):
+	    """Return true if x is in the range [start, end]"""
+	    if start <= end:
+	        return start <= x <= end
+	    else:
+	        return start <= x or x <= end
+		
+		# if rh:
+		# 	if not rh.id == self.id:
+		# 		raise ValidationError({'room': ['Hay una reservacion para la sala '+ rh.room.name+' de '+rh.hour_from.strftime('%H:%M')+' a '+ rh.hour_to.strftime('%H:%M'),]})
+		
+		# if not ((self.hour_from > self.room.hour_from and self.hour_from < self.room.hour_to) and (self.hour_to > self.room.hour_from and self.hour_to < self.room.hour_to)):
+		# 	raise ValidationError({'room': ['Sala no disponible.',]})
+
 
 """
 	field: type_noti
